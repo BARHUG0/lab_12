@@ -32,5 +32,5 @@ Aid the user to properly understand the concepts of functional programming with 
 - [x] Help the user solve problem 2
 - [x] Help the user to analyze and understand what problem 3 is about
 - [x] Help the user solve problem 3
-- [ ] Help the user to analyze and understand what problem 4 is about
-- [ ] Help the user solve problem 4
+- [x] Help the user to analyze and understand what problem 4 is about
+- [x] Help the user solve problem 4
