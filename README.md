@@ -4,6 +4,8 @@
 
 Este proyecto documenta el proceso de aprendizaje de la programación funcional con Haskell y los fundamentos del cálculo lambda. A través de la resolución de cuatro problemas específicos de un laboratorio, se exploran conceptos clave de Haskell como tipos de datos algebraicos, funciones de orden superior, pattern matching, currying y manejo de I/O.
 
+[Video Demostrativo](https://www.loom.com/share/60e90f3535294e948ec79874112aca4d)
+
 ## 2. Cómo fue codificado
 
 La implementación inicial y la experimentación con el código Haskell se realizaron en un entorno de playground oficial de Haskell. Para los ajustes finales, la verificación de la salida y la interactividad con el usuario, se utilizó Replit, que proporcionó un entorno de terminal completo para ejecutar y probar los programas.
