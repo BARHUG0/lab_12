@@ -27,8 +27,8 @@ Aid the user to properly understand the concepts of functional programming with 
 - [x] Explain the basics of functional programming with Haskell
 - [x] Help the user find an online Haskell playground
 - [ ] Help the user to analyze and understand what problem 1 is about
-- [ ] Help the user solve problem 1
-- [ ] Help the user to analyze and understand what problem 2 is about
+- [x] Help the user solve problem 1
+- [x] Help the user to analyze and understand what problem 2 is about
 - [ ] Help the user solve problem 2
 - [ ] Help the user to analyze and understand what problem 3 is about
 - [ ] Help the user solve problem 3
