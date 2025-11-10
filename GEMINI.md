@@ -18,13 +18,14 @@ Aid the user to properly understand the concepts of functional programming with 
 - All of the code will be implemented on an online playground as Haskell will not be installed in the host machine.
 - Always teach Haskell code conventions and explain why they are prefered.
 - Keep in mind that the user has programmed before but is new to Haskell so may need more help to understand the functional aspects.
+- Always explain Haskell's type inference and type classes when they are relevant to the code being discussed.
 
 ## Tasks
 
 - [x] Analyze the given pdf file
 - [x] Explain the basics of lambda calculus and lambda functions
 - [x] Explain the basics of functional programming with Haskell
-- [ ] Help the user find an online Haskell playground
+- [x] Help the user find an online Haskell playground
 - [ ] Help the user to analyze and understand what problem 1 is about
 - [ ] Help the user solve problem 1
 - [ ] Help the user to analyze and understand what problem 2 is about

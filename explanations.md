@@ -116,6 +116,137 @@ Haskell is a purely functional programming language, which means it enforces the
 *   **Laziness by Default**: Expressions in Haskell are not evaluated until their results are actually needed. This can lead to more efficient code and allows for the creation of infinite data structures.
 *   **Pattern Matching**: This is a powerful feature that allows you to deconstruct data and define different function behaviors based on the structure of the input.
 
+### Basic Haskell: "Hello World" Example
+
+Let's start with the classic "Hello, World!" program in Haskell:
+
+```haskell
+-- This is a single-line comment in Haskell
+
+-- The 'main' function is the entry point of every Haskell program.
+-- Its type signature 'IO ()' indicates that it performs an I/O action
+-- and returns no meaningful value (represented by '()', the unit type).
+main :: IO ()
+main = putStrLn "Hello, World!"
+```
+
+**Explanation:**
+
+1.  **`-- This is a single-line comment in Haskell`**:
+    *   Haskell uses `--` for single-line comments. Multi-line comments are enclosed in `{-` and `-}`.
+
+2.  **`main :: IO ()`**:
+    *   This is the **type signature** for the `main` function.
+    *   `main` is the special function that serves as the entry point for any executable Haskell program.
+    *   `::` can be read as "has the type".
+    *   `IO ()` is a type that signifies an **I/O action**. In Haskell, functions are typically pure (no side effects). Interacting with the outside world (like printing to the console) is handled by wrapping these actions in the `IO` type.
+    *   `()` (pronounced "unit") is a type that has only one value, also written `()`. It's used when a function doesn't need to return any specific data. So, `IO ()` means "an I/O action that produces no meaningful result."
+
+3.  **`main = putStrLn "Hello, World!"`**:
+    *   This is the **definition** of the `main` function.
+    *   `=` assigns the result of the expression on the right to the name on the left.
+    *   `putStrLn` is a standard library function that takes a `String` and prints it to the console, followed by a newline character.
+    *   `"Hello, World!"` is a string literal.
+
+**Haskell Conventions:**
+
+*   **Type Signatures**: It's a strong convention to include type signatures for top-level functions.
+*   **Function Definition**: Functions are defined by stating their name, followed by their arguments, and then an `=` sign, followed by the expression that defines their behavior.
+*   **No Parentheses for Function Application**: Function application is denoted by simply placing the function name before its arguments, separated by spaces (e.g., `putStrLn "Hello"`).
+
+### Drone Simulation Example
+
+This code simulates the movement of a drone in a 3D space based on a series of random movements.
+
+```haskell
+import Control.Monad (replicateM)
+import Data.Foldable (foldl')
+import qualified System.Random.Stateful as Rand
+
+data Drone = Drone
+  { xPos :: Int
+  , yPos :: Int
+  , zPos :: Int
+  } deriving Show
+
+data Movement
+  = Forward | Back | ToLeft | ToRight | Up | Down
+  deriving (Show, Enum, Bounded)
+
+main :: IO ()
+main = do
+  let initDrone = Drone { xPos = 0, yPos = 100, zPos = 0 }
+  -- Generate 15 moves randomly
+  randomMoves <- replicateM 15 $ Rand.uniformEnumM Rand.globalStdGen
+  let resultDrone = foldl' moveDrone initDrone randomMoves
+  print resultDrone
+
+moveDrone :: Drone -> Movement -> Drone
+moveDrone drone move =
+  case move of
+    Forward -> drone { zPos = zPos drone + 1 }
+    Back    -> drone { zPos = zPos drone - 1 }
+    ToLeft  -> drone { xPos = xPos drone - 1 }
+    ToRight -> drone { xPos = xPos drone + 1 }
+    Up      -> drone { yPos = yPos drone + 1 }
+    Down    -> drone { yPos = yPos drone - 1 }
+```
+
+**Explanation:**
+
+1.  **`import ...`**: These lines import necessary modules for monadic operations (`Control.Monad`), strict folding (`Data.Foldable`), and random number generation (`System.Random.Stateful`).
+2.  **`data Drone = Drone { ... } deriving Show`**:
+    *   Defines a new data type `Drone` using **record syntax**. It has three fields: `xPos`, `yPos`, and `zPos`, all of type `Int`.
+    *   `deriving Show` automatically generates code to allow `Drone` values to be converted to a string for printing.
+3.  **`data Movement = Forward | Back | ... deriving (Show, Enum, Bounded)`**:
+    *   Defines an algebraic data type `Movement` with six **constructors** representing different directions.
+    *   `deriving (Show, Enum, Bounded)`:
+        *   `Show`: Allows `Movement` values to be printed.
+        *   `Enum`: Allows `Movement` values to be treated as elements of an enumerated type (e.g., for generating random values).
+        *   `Bounded`: Indicates that there's a minimum (`minBound`) and maximum (`maxBound`) value for `Movement`.
+4.  **`main :: IO ()`**: The program's entry point.
+    *   The `do` notation is used to sequence `IO` actions, making them look more imperative while maintaining Haskell's functional purity.
+5.  **`let initDrone = Drone { xPos = 0, yPos = 100, zPos = 0 }`**:
+    *   Defines an initial `Drone` state using record construction syntax. `let` introduces local, immutable bindings.
+6.  **`randomMoves <- replicateM 15 $ Rand.uniformEnumM Rand.globalStdGen`**:
+    *   This line generates a list of 15 random `Movement` values.
+    *   `Rand.uniformEnumM Rand.globalStdGen`: A function from `System.Random.Stateful` that generates a random value from an `Enum` type.
+    *   `replicateM 15`: A monadic function from `Control.Monad` that repeats an `IO` action (generating a random move) 15 times and collects the results into a list within the `IO` context.
+    *   `<-`: The **bind operator** in `do` notation. It "unwraps" the `IO` action on the right (which is `IO [Movement]`) and assigns its *result* (the list of random moves) to the `randomMoves` variable.
+7.  **`let resultDrone = foldl' moveDrone initDrone randomMoves`**:
+    *   This line simulates the drone's movement by applying a sequence of movements.
+    *   `foldl'` (from `Data.Foldable`) is a **strict left fold**. It's a higher-order function that takes:
+        *   A function (`moveDrone`) to apply repeatedly.
+        *   An initial accumulator value (`initDrone`).
+        *   A list (`randomMoves`).
+    *   It applies `moveDrone` to the accumulator and each element of the list, updating the accumulator with each step.
+8.  **`print resultDrone`**: Prints the final state of the drone to the console.
+9.  **`moveDrone :: Drone -> Movement -> Drone`**:
+    *   This function takes a `Drone` and a `Movement` and returns a *new* `Drone` with updated coordinates.
+    *   **`case move of ...`**: This uses **pattern matching** to inspect the `Movement` value and execute different code branches based on it.
+    *   **`drone { zPos = zPos drone + 1 }`**: This is **record update syntax**. It creates a *new* `Drone` record that is identical to the original `drone`, except the specified field (`zPos`) is updated. This is a key demonstration of **immutability** in Haskell; the original `drone` value is never changed.
+
+### Type Inference and Type Classes in Action
+
+In the drone example, the line `randomMoves <- replicateM 15 $ Rand.uniformEnumM Rand.globalStdGen` is particularly interesting. The `Movement` type is not explicitly passed as a parameter. So how does Haskell know to generate `Movement` values?
+
+This happens through **type inference** and **type classes**.
+
+1.  **The Compiler Infers the Required Type**: The compiler sees how `randomMoves` is used *later* in the code: `foldl' moveDrone initDrone randomMoves`. It knows the type of `moveDrone` is `Drone -> Movement -> Drone`. From this context, it deduces that `randomMoves` **must be a list of `Movement` values**, i.e., its type is `[Movement]`.
+
+2.  **The Compiler Checks the Polymorphic Function**: Now it looks at how `randomMoves` is created. The function `Rand.uniformEnumM` is **polymorphic**. Its simplified type is `(Enum a, Bounded a) => g -> IO a`.
+    *   This means it can produce a value of *any* type `a`.
+    *   However, the `(Enum a, Bounded a) =>` part is a **constraint**. It means that the chosen type `a` *must* belong to the `Enum` and `Bounded` type classes.
+
+3.  **The Compiler Connects the Dots**:
+    *   The compiler needs to produce a `[Movement]`.
+    *   It sees that `Rand.uniformEnumM` can produce an `IO a`.
+    *   It asks: "Can I use `Movement` for the type variable `a`?"
+    *   It checks your definition: `data Movement = ... deriving (Show, Enum, Bounded)`. Because you derived `Enum` and `Bounded`, the answer is **yes**.
+    *   Therefore, the compiler automatically **specializes** the polymorphic `uniformEnumM` function to use `Movement` as the type `a` in this specific context.
+
+In short, the type isn't passed as a value. It's **inferred** from the context, and the compiler uses **type classes** to verify that the requested type is valid for that function.
+
 **References:**
 
 *   **"Learn You a Haskell for Great Good!"** by Miran Lipovača: [http://learnyouahaskell.com/](http://learnyouahaskell.com/)
